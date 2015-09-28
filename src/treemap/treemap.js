@@ -25,13 +25,13 @@ d3.chart("hierarchy").extend("treemap", {
           this.append("rect")
             .attr("width", function(d) { return d.dx; })
             .attr("height", function(d) { return d.dy; })
-            .attr("fill", function(d) { return d.parent ? chart.d3.colorScale(d.parent[chart.features.name]) : null; });
+            .attr("fill", function(d) { return d.parent ? chart.d3.colorScale(d.parent[chart.options.name]) : null; });
 
           this.append("text")
             .attr("x", function(d) { return d.dx / 2; })
             .attr("y", function(d) { return d.dy / 2; })
             .attr("dy", ".35em")
-            .text(function(d) { return d.children ? null : d[chart.features.name]; }) // order is matter! getComputedTextLength
+            .text(function(d) { return d.children ? null : d[chart.options.name]; }) // order is matter! getComputedTextLength
             .style("opacity", function(d) { d.w = this.getComputedTextLength(); return d.dx > d.w ? 1 : 0; });
 
           this.on("click", function(event) {
@@ -50,7 +50,7 @@ d3.chart("hierarchy").extend("treemap", {
 
     return chart.d3.layout
       .round(false)
-      .size([chart.features.width, chart.features.height])
+      .size([chart.options.width, chart.options.height])
       .sticky(true)
       .nodes(root);
   },
@@ -60,8 +60,8 @@ d3.chart("hierarchy").extend("treemap", {
     var chart = this;
 
     var node,
-        x = d3.scale.linear().range([0, chart.features.width]),
-        y = d3.scale.linear().range([0, chart.features.height]);
+        x = d3.scale.linear().range([0, chart.options.width]),
+        y = d3.scale.linear().range([0, chart.options.height]);
 
     chart.layers.base.on("merge", function() {
       node = chart.root;
@@ -69,14 +69,14 @@ d3.chart("hierarchy").extend("treemap", {
     });
 
     function collapse(d) {
-      var kx = chart.features.width  / d.dx,
-          ky = chart.features.height / d.dy;
+      var kx = chart.options.width  / d.dx,
+          ky = chart.options.height / d.dy;
 
       x.domain([d.x, d.x + d.dx]);
       y.domain([d.y, d.y + d.dy]);
 
       var t = chart.layers.base.transition()
-        .duration(chart.features.duration);
+        .duration(chart.options.duration);
 
       t.selectAll(".cell")
         .attr("transform", function(d) { return "translate(" + x(d.x) + "," + y(d.y) + ")"; });
