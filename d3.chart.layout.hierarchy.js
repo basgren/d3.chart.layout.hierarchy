@@ -220,17 +220,19 @@ d3.chart("hierarchy").extend("cluster-tree", {
 
     var counter = 0;
 
-    chart.radius(chart.options.radius     || 4.5);
-    chart.levelGap(chart.options.levelGap || "auto");
+    // Custom options
+    chart.options.radius = 4.5;
+    chart.options.levelGap = "auto";
 
     chart.layers.links = chart.layers.base.append("g").classed("links", true);
     chart.layers.nodes = chart.layers.base.append("g").classed("nodes", true);
 
-
     chart.layer("nodes", chart.layers.nodes, {
 
       dataBind: function(nodes) {
-        return this.selectAll(".node").data(nodes, function(d) { return d._id || (d._id = ++counter); });
+        return this.selectAll(".node").data(nodes, function(d) {
+          return d._id || (d._id = ++counter);
+        });
       },
 
       insert: function() {
@@ -467,7 +469,8 @@ d3.chart("cluster-tree").extend("cluster-tree.cartesian", {
 
     var chart = this;
 
-    chart.margin(chart.options.margin || {});
+    // Custom options
+    chart.options.margin = {};
 
     chart.d3.diagonal = d3.svg.diagonal().projection(function(d) { return [d.y, d.x]; });
 
@@ -552,8 +555,8 @@ d3.chart("cluster-tree").extend("cluster-tree.radial", {
 
     var chart = this;
 
-    // TODO:
-    chart.diameter(chart.options.diameter || Math.min(chart.options.width, chart.options.height));
+    // Custom options
+    chart.options.diameter = Math.min(chart.options.width, chart.options.height);
 
     chart.d3.diagonal = d3.svg.diagonal.radial().projection(function(d) { return [d.y, d.x / 180 * Math.PI]; });
     chart.d3.zoom.translate([chart.options.diameter / 2, chart.options.diameter / 2]);
@@ -671,9 +674,10 @@ d3.chart("hierarchy").extend("pack.flattened", {
     var chart = this;
 
     chart.d3.layout = d3.layout.pack();
-   
-    chart.bubble(chart.options.bubble     || {});
-    chart.diameter(chart.options.diameter || Math.min(chart.options.width, chart.options.height));
+
+    // Custom options
+    chart.options.bubble = {};
+    chart.options.diameter = Math.min(chart.options.width, chart.options.height);
 
     chart.d3.zoom.translate([(chart.options.width - chart.options.diameter) / 2, (chart.options.height - chart.options.diameter) / 2]);
 
@@ -788,7 +792,8 @@ d3.chart("hierarchy").extend("pack.nested", {
     
     chart.d3.layout = d3.layout.pack();
 
-    chart.diameter(chart.options.diameter || Math.min(chart.options.width, chart.options.height));
+    // Custom options
+    chart.options.diameter = Math.min(chart.options.width, chart.options.height);
 
     chart.d3.zoom.translate([(chart.options.width - chart.options.diameter) / 2, (chart.options.height - chart.options.diameter) / 2]);
 
@@ -919,7 +924,8 @@ d3.chart("hierarchy").extend("partition.arc", {
 
     chart.d3.layout = d3.layout.partition();
 
-    chart.diameter(chart.options.diameter || Math.min(chart.options.width, chart.options.height));
+    // Custom options
+    chart.options.diameter = Math.min(chart.options.width, chart.options.height);
 
     chart.d3.x   = d3.scale.linear().range([0, 2 * Math.PI]);
     chart.d3.y   = d3.scale.sqrt().range([0, chart.options.diameter / 2]);
@@ -1035,7 +1041,6 @@ d3.chart("hierarchy").extend("partition.rectangle", {
         y = d3.scale.linear().range([0, chart.options.height]);
 
     chart.d3.transform = function(d, ky) { return "translate(8," + d.dx * ky / 2 + ")"; };
-
 
     chart.layer("base", chart.layers.base, {
 

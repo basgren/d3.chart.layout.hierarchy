@@ -7,7 +7,8 @@ d3.chart("hierarchy").extend("partition.arc", {
 
     chart.d3.layout = d3.layout.partition();
 
-    chart.diameter(chart.options.diameter || Math.min(chart.options.width, chart.options.height));
+    // Custom options
+    chart.options.diameter = Math.min(chart.options.width, chart.options.height);
 
     chart.d3.x   = d3.scale.linear().range([0, 2 * Math.PI]);
     chart.d3.y   = d3.scale.sqrt().range([0, chart.options.diameter / 2]);

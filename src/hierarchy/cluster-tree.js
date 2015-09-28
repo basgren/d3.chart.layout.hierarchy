@@ -7,17 +7,19 @@ d3.chart("hierarchy").extend("cluster-tree", {
 
     var counter = 0;
 
-    chart.radius(chart.options.radius     || 4.5);
-    chart.levelGap(chart.options.levelGap || "auto");
+    // Custom options
+    chart.options.radius = 4.5;
+    chart.options.levelGap = "auto";
 
     chart.layers.links = chart.layers.base.append("g").classed("links", true);
     chart.layers.nodes = chart.layers.base.append("g").classed("nodes", true);
 
-
     chart.layer("nodes", chart.layers.nodes, {
 
       dataBind: function(nodes) {
-        return this.selectAll(".node").data(nodes, function(d) { return d._id || (d._id = ++counter); });
+        return this.selectAll(".node").data(nodes, function(d) {
+          return d._id || (d._id = ++counter);
+        });
       },
 
       insert: function() {

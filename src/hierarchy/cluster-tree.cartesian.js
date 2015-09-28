@@ -5,7 +5,8 @@ d3.chart("cluster-tree").extend("cluster-tree.cartesian", {
 
     var chart = this;
 
-    chart.margin(chart.options.margin || {});
+    // Custom options
+    chart.options.margin = {};
 
     chart.d3.diagonal = d3.svg.diagonal().projection(function(d) { return [d.y, d.x]; });
 

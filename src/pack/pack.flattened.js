@@ -6,9 +6,10 @@ d3.chart("hierarchy").extend("pack.flattened", {
     var chart = this;
 
     chart.d3.layout = d3.layout.pack();
-   
-    chart.bubble(chart.options.bubble     || {});
-    chart.diameter(chart.options.diameter || Math.min(chart.options.width, chart.options.height));
+
+    // Custom options
+    chart.options.bubble = {};
+    chart.options.diameter = Math.min(chart.options.width, chart.options.height);
 
     chart.d3.zoom.translate([(chart.options.width - chart.options.diameter) / 2, (chart.options.height - chart.options.diameter) / 2]);
 

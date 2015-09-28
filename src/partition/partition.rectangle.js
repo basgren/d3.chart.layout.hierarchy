@@ -12,7 +12,6 @@ d3.chart("hierarchy").extend("partition.rectangle", {
 
     chart.d3.transform = function(d, ky) { return "translate(8," + d.dx * ky / 2 + ")"; };
 
-
     chart.layer("base", chart.layers.base, {
 
       dataBind: function(nodes) {

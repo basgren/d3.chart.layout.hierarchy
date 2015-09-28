@@ -5,8 +5,8 @@ d3.chart("cluster-tree").extend("cluster-tree.radial", {
 
     var chart = this;
 
-    // TODO:
-    chart.diameter(chart.options.diameter || Math.min(chart.options.width, chart.options.height));
+    // Custom options
+    chart.options.diameter = Math.min(chart.options.width, chart.options.height);
 
     chart.d3.diagonal = d3.svg.diagonal.radial().projection(function(d) { return [d.y, d.x / 180 * Math.PI]; });
     chart.d3.zoom.translate([chart.options.diameter / 2, chart.options.diameter / 2]);
