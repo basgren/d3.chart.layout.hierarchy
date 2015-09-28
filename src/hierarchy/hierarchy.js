@@ -95,12 +95,15 @@ d3.chart("hierarchy", {
   },
 
   // TODO: maybe it's better to rename it to `nameKey`? as `name` confuses a bit - the function sets not an actual value, but the key which is used to get node name.
-  name: function(_) {
+  name: function(value) {
     if( ! arguments.length ) {
       return this.options.name;
     }
 
-    this.options.name = _;
+    if (this.options.name === value)
+      return;
+
+    this.options.name = value;
 
     this.trigger("change:name");
     if( this.root ) {
@@ -112,12 +115,15 @@ d3.chart("hierarchy", {
 
 
   // TODO: maybe it's better to rename it to `valueKey`? as `value` confuses a bit - the function sets not an actual value, but the key which is used to get node value.
-  value: function(_) {
+  value: function(value) {
     if( ! arguments.length ) {
       return this.options.value;
     }
 
-    this.options.value = _;
+    if (this.options.value === value)
+      return;
+
+    this.options.value = value;
 
     this.trigger("change:value");
     if( this.root ) {
@@ -128,12 +134,15 @@ d3.chart("hierarchy", {
   },
 
 
-  colors: function(_) {
+  colors: function(value) {
     if( ! arguments.length ) {
       return this.options.colors;
     }
 
-    this.options.colors = _;
+    if (this.options.colors === value)
+      return;
+
+    this.options.colors = value;
 
     this.trigger("change:colors");
     if( this.root ) {
@@ -144,12 +153,15 @@ d3.chart("hierarchy", {
   },
 
 
-  duration: function(_) {
+  duration: function(value) {
     if( ! arguments.length ) {
       return this.options.duration;
     }
 
-    this.options.duration = _;
+    if (this.options.duration === value)
+      return;
+
+    this.options.duration = value;
 
     this.trigger("change:duration");
     if( this.root ) {
@@ -159,30 +171,38 @@ d3.chart("hierarchy", {
     return this;
   },
 
-
-  sortable: function(_) {
+  /**
+   * Enables sorting for tree nodes. Accepts either strings or comparator
+   * function.
+   *
+   * @param comparator "_ASC" for ascending sort, "_DESC" for descending sort, or
+   *          comparator function.
+   * @returns {d3.chart} Chart object
+   */
+  sortable: function(comparator) {
     var chart = this;
 
-    if( _ === "_ASC" ) {
+    // TODO: can we rename it to just "ASC" and "DESC"? there's no reason in additional underscore
+    if( comparator === "_ASC" ) {
       chart.d3.layout.sort(function(a, b) {
         return d3.ascending(a[chart.options.name], b[chart.options.name] );
       });
-    } else if( _ === "_DESC" ) {
+    } else if( comparator === "_DESC" ) {
       chart.d3.layout.sort(function(a, b) {
         return d3.descending(a[chart.options.name], b[chart.options.name] );
       });
     } else {
-      chart.d3.layout.sort(_);
+      chart.d3.layout.sort(comparator);
     }
 
     return chart;
   },
 
 
-  zoomable: function(_) {
+  zoomable: function(range) {
     var chart = this;
 
-    var extent = _ || [0, Infinity];
+    var extent = range || [0, Infinity];
 
     function zoom() {
       chart.layers.base

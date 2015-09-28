@@ -62,14 +62,14 @@ d3.chart("cluster-tree").extend("cluster-tree.cartesian", {
   },
 
 
-  margin: function(_) {
+  margin: function(margin) {
     if( ! arguments.length ) {
       return this.options.margin;
     }
 
     ["top", "right", "bottom", "left"].forEach(function(dimension) {
-      if( dimension in _ ) {
-        this[dimension] = _[dimension];
+      if( dimension in margin ) {
+        this[dimension] = margin[dimension];
       }
     }, this.options.margin = { top: 0, right: 0, bottom: 0, left: 0 });
 

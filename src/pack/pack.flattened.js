@@ -70,12 +70,12 @@ d3.chart("hierarchy").extend("pack.flattened", {
   },
 
 
-  diameter: function(_) {
+  diameter: function(value) {
     if( ! arguments.length ) {
       return this.options.diameter;
     }
 
-    this.options.diameter = _ - 10;
+    this.options.diameter = value - 10; // TODO: why do we need to set `value - 10`? Should it be moved to some named constant or explained?
 
     this.trigger("change:diameter");
     if( this.root ) {
@@ -86,7 +86,7 @@ d3.chart("hierarchy").extend("pack.flattened", {
   },
 
 
-  bubble: function(_) {
+  bubble: function(value) {
     if( ! arguments.length ) {
       return this.options.bubble;
     }
@@ -94,8 +94,8 @@ d3.chart("hierarchy").extend("pack.flattened", {
     var chart = this;
 
     ["flatten", "title", "pack"].forEach(function(func) {
-      if( func in _ ) {
-        this[func] = d3.functor(_[func]);
+      if( func in value ) {
+        this[func] = d3.functor(value[func]);
       }
     }, this.options.bubble = {
        flatten : null,

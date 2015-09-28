@@ -66,12 +66,15 @@ d3.chart("cluster-tree").extend("cluster-tree.radial", {
   },
 
 
-  diameter: function(_) {
+  diameter: function(value) {
     if( ! arguments.length ) {
       return this.options.diameter;
     }
 
-    this.options.diameter = _;
+    if (this.options.diameter === value)
+      return;
+
+    this.options.diameter = value;
     
     this.trigger("change:diameter");
     if( this.root ) {

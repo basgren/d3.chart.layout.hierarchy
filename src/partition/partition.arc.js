@@ -67,12 +67,12 @@ d3.chart("hierarchy").extend("partition.arc", {
   },
 
 
-  diameter: function(_) {
+  diameter: function(value) {
     if( ! arguments.length ) {
       return this.options.diameter;
     }
 
-    this.options.diameter = _ - 10;
+    this.options.diameter = value - 10;
 
     this.trigger("change:radius");
     if( this.root ) {

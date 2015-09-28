@@ -107,12 +107,15 @@ d3.chart("hierarchy", {
   },
 
   // TODO: maybe it's better to rename it to `nameKey`? as `name` confuses a bit - the function sets not an actual value, but the key which is used to get node name.
-  name: function(_) {
+  name: function(value) {
     if( ! arguments.length ) {
       return this.options.name;
     }
 
-    this.options.name = _;
+    if (this.options.name === value)
+      return;
+
+    this.options.name = value;
 
     this.trigger("change:name");
     if( this.root ) {
@@ -124,12 +127,15 @@ d3.chart("hierarchy", {
 
 
   // TODO: maybe it's better to rename it to `valueKey`? as `value` confuses a bit - the function sets not an actual value, but the key which is used to get node value.
-  value: function(_) {
+  value: function(value) {
     if( ! arguments.length ) {
       return this.options.value;
     }
 
-    this.options.value = _;
+    if (this.options.value === value)
+      return;
+
+    this.options.value = value;
 
     this.trigger("change:value");
     if( this.root ) {
@@ -140,12 +146,15 @@ d3.chart("hierarchy", {
   },
 
 
-  colors: function(_) {
+  colors: function(value) {
     if( ! arguments.length ) {
       return this.options.colors;
     }
 
-    this.options.colors = _;
+    if (this.options.colors === value)
+      return;
+
+    this.options.colors = value;
 
     this.trigger("change:colors");
     if( this.root ) {
@@ -156,12 +165,15 @@ d3.chart("hierarchy", {
   },
 
 
-  duration: function(_) {
+  duration: function(value) {
     if( ! arguments.length ) {
       return this.options.duration;
     }
 
-    this.options.duration = _;
+    if (this.options.duration === value)
+      return;
+
+    this.options.duration = value;
 
     this.trigger("change:duration");
     if( this.root ) {
@@ -171,30 +183,38 @@ d3.chart("hierarchy", {
     return this;
   },
 
-
-  sortable: function(_) {
+  /**
+   * Enables sorting for tree nodes. Accepts either strings or comparator
+   * function.
+   *
+   * @param comparator "_ASC" for ascending sort, "_DESC" for descending sort, or
+   *          comparator function.
+   * @returns {d3.chart} Chart object
+   */
+  sortable: function(comparator) {
     var chart = this;
 
-    if( _ === "_ASC" ) {
+    // TODO: can we rename it to just "ASC" and "DESC"? there's no reason in additional underscore
+    if( comparator === "_ASC" ) {
       chart.d3.layout.sort(function(a, b) {
         return d3.ascending(a[chart.options.name], b[chart.options.name] );
       });
-    } else if( _ === "_DESC" ) {
+    } else if( comparator === "_DESC" ) {
       chart.d3.layout.sort(function(a, b) {
         return d3.descending(a[chart.options.name], b[chart.options.name] );
       });
     } else {
-      chart.d3.layout.sort(_);
+      chart.d3.layout.sort(comparator);
     }
 
     return chart;
   },
 
 
-  zoomable: function(_) {
+  zoomable: function(range) {
     var chart = this;
 
-    var extent = _ || [0, Infinity];
+    var extent = range || [0, Infinity];
 
     function zoom() {
       chart.layers.base
@@ -342,12 +362,16 @@ d3.chart("hierarchy").extend("cluster-tree", {
 
 
 
-  radius: function(_) {
+  radius: function(value) {
     if( ! arguments.length ) {
       return this.options.radius;
     }
 
-    if( _ === "_COUNT" ) {
+    if (this.options.radius === value)
+      return;
+
+    // TODO: do we need underscore in "_COUNT"?
+    if( value === "_COUNT" ) {
       this.options.radius = function(d) {
         if( d._children ) {
           return d._children.length;
@@ -358,7 +382,7 @@ d3.chart("hierarchy").extend("cluster-tree", {
       };
 
     } else {
-      this.options.radius = _;
+      this.options.radius = value;
     }
 
     this.trigger("change:radius");
@@ -377,17 +401,20 @@ d3.chart("hierarchy").extend("cluster-tree", {
    * 
    * @author: Basil Gren @basgren
    *
-   * @param _
+   * @param value
    * @returns {*}
    */
-  levelGap: function(_) {
+  levelGap: function(value) {
     if( ! arguments.length ) {
       return this.options.levelGap;
     }
 
-    this.options.levelGap = _;
-    this.trigger("change:levelGap");
+    if (this.options.levelGap === value)
+      return;
 
+    this.options.levelGap = value;
+
+    this.trigger("change:levelGap");
     if( this.root ) {
       this.draw(this.root);
     }
@@ -396,11 +423,11 @@ d3.chart("hierarchy").extend("cluster-tree", {
   },
 
 
-  collapsible: function(_) {
+  collapsible: function(maxDepth) {
 
     var chart = this;
 
-    var depth = _;
+    var depth = maxDepth;
 
     chart.on("collapse:init", function() {
 
@@ -526,14 +553,14 @@ d3.chart("cluster-tree").extend("cluster-tree.cartesian", {
   },
 
 
-  margin: function(_) {
+  margin: function(margin) {
     if( ! arguments.length ) {
       return this.options.margin;
     }
 
     ["top", "right", "bottom", "left"].forEach(function(dimension) {
-      if( dimension in _ ) {
-        this[dimension] = _[dimension];
+      if( dimension in margin ) {
+        this[dimension] = margin[dimension];
       }
     }, this.options.margin = { top: 0, right: 0, bottom: 0, left: 0 });
 
@@ -616,12 +643,15 @@ d3.chart("cluster-tree").extend("cluster-tree.radial", {
   },
 
 
-  diameter: function(_) {
+  diameter: function(value) {
     if( ! arguments.length ) {
       return this.options.diameter;
     }
 
-    this.options.diameter = _;
+    if (this.options.diameter === value)
+      return;
+
+    this.options.diameter = value;
     
     this.trigger("change:diameter");
     if( this.root ) {
@@ -738,12 +768,12 @@ d3.chart("hierarchy").extend("pack.flattened", {
   },
 
 
-  diameter: function(_) {
+  diameter: function(value) {
     if( ! arguments.length ) {
       return this.options.diameter;
     }
 
-    this.options.diameter = _ - 10;
+    this.options.diameter = value - 10; // TODO: why do we need to set `value - 10`? Should it be moved to some named constant or explained?
 
     this.trigger("change:diameter");
     if( this.root ) {
@@ -754,7 +784,7 @@ d3.chart("hierarchy").extend("pack.flattened", {
   },
 
 
-  bubble: function(_) {
+  bubble: function(value) {
     if( ! arguments.length ) {
       return this.options.bubble;
     }
@@ -762,8 +792,8 @@ d3.chart("hierarchy").extend("pack.flattened", {
     var chart = this;
 
     ["flatten", "title", "pack"].forEach(function(func) {
-      if( func in _ ) {
-        this[func] = d3.functor(_[func]);
+      if( func in value ) {
+        this[func] = d3.functor(value[func]);
       }
     }, this.options.bubble = {
        flatten : null,
@@ -858,12 +888,12 @@ d3.chart("hierarchy").extend("pack.nested", {
   },
 
 
-  diameter: function(_) {
+  diameter: function(value) {
     if( ! arguments.length ) {
       return this.options.diameter;
     }
 
-    this.options.diameter = _ - 10;
+    this.options.diameter = value - 10;
 
     this.trigger("change:diameter");
     if( this.root ) {
@@ -984,12 +1014,12 @@ d3.chart("hierarchy").extend("partition.arc", {
   },
 
 
-  diameter: function(_) {
+  diameter: function(value) {
     if( ! arguments.length ) {
       return this.options.diameter;
     }
 
-    this.options.diameter = _ - 10;
+    this.options.diameter = value - 10;
 
     this.trigger("change:radius");
     if( this.root ) {

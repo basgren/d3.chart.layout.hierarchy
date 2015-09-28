@@ -129,12 +129,16 @@ d3.chart("hierarchy").extend("cluster-tree", {
 
 
 
-  radius: function(_) {
+  radius: function(value) {
     if( ! arguments.length ) {
       return this.options.radius;
     }
 
-    if( _ === "_COUNT" ) {
+    if (this.options.radius === value)
+      return;
+
+    // TODO: do we need underscore in "_COUNT"?
+    if( value === "_COUNT" ) {
       this.options.radius = function(d) {
         if( d._children ) {
           return d._children.length;
@@ -145,7 +149,7 @@ d3.chart("hierarchy").extend("cluster-tree", {
       };
 
     } else {
-      this.options.radius = _;
+      this.options.radius = value;
     }
 
     this.trigger("change:radius");
@@ -164,17 +168,20 @@ d3.chart("hierarchy").extend("cluster-tree", {
    * 
    * @author: Basil Gren @basgren
    *
-   * @param _
+   * @param value
    * @returns {*}
    */
-  levelGap: function(_) {
+  levelGap: function(value) {
     if( ! arguments.length ) {
       return this.options.levelGap;
     }
 
-    this.options.levelGap = _;
-    this.trigger("change:levelGap");
+    if (this.options.levelGap === value)
+      return;
 
+    this.options.levelGap = value;
+
+    this.trigger("change:levelGap");
     if( this.root ) {
       this.draw(this.root);
     }
@@ -183,11 +190,11 @@ d3.chart("hierarchy").extend("cluster-tree", {
   },
 
 
-  collapsible: function(_) {
+  collapsible: function(maxDepth) {
 
     var chart = this;
 
-    var depth = _;
+    var depth = maxDepth;
 
     chart.on("collapse:init", function() {
 
