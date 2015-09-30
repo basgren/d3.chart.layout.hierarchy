@@ -9,8 +9,8 @@
 
       var counter = 0;
 
-      chart.radius(chart.features.radius     || 4.5);
-      chart.levelGap(chart.features.levelGap || "auto");
+      chart.radius(chart.options.radius     || 4.5);
+      chart.levelGap(chart.options.levelGap || "auto");
 
       chart.layers.links = chart.layers.base.append("g").classed("links", true);
       chart.layers.nodes = chart.layers.base.append("g").classed("nodes", true);
@@ -36,7 +36,7 @@
 
             this.append("text")
               .attr("dy", ".35em")
-              .text(function(d) { return d[chart.features.name]; })
+              .text(function(d) { return d[chart.options.name]; })
               .style("fill-opacity", 0);
 
             this.on("click", function(event) {
@@ -51,14 +51,14 @@
           "merge:transition": function() {
             this.select("circle")
               .attr()
-              .attr("r", chart.features.radius);
+              .attr("r", chart.options.radius);
 
             this.select("text")
               .style("fill-opacity", 1);
           },
 
           "exit:transition": function() {
-            this.duration(chart.features.duration)
+            this.duration(chart.options.duration)
               .remove();
 
             this.select("circle")
@@ -91,12 +91,12 @@
           },
 
           "merge:transition": function() {
-            this.duration(chart.features.duration)
+            this.duration(chart.options.duration)
               .attr("d", chart.d3.diagonal);
           },
 
           "exit:transition": function() {
-            this.duration(chart.features.duration)
+            this.duration(chart.options.duration)
               .attr("d", function(d) {
                 var o = { x: chart.source.x, y: chart.source.y };
                 return chart.d3.diagonal({ source: o, target: o });
@@ -113,8 +113,8 @@
       var chart = this;
 
       // Adjust gap between node levels.
-      if( chart.features.levelGap && chart.features.levelGap !== "auto" ) {
-        nodes.forEach(function (d) { d.y = d.depth * chart.features.levelGap; });
+      if( chart.options.levelGap && chart.options.levelGap !== "auto" ) {
+        nodes.forEach(function (d) { d.y = d.depth * chart.options.levelGap; });
       }
 
       chart.on("transform:stash", function() {
@@ -131,11 +131,11 @@
 
     radius: function(_) {
       if( ! arguments.length ) {
-        return this.features.radius;
+        return this.options.radius;
       }
 
       if( _ === "_COUNT" ) {
-        this.features.radius = function(d) {
+        this.options.radius = function(d) {
           if( d._children ) {
             return d._children.length;
           } else if( d.children ) {
@@ -145,7 +145,7 @@
         };
 
       } else {
-        this.features.radius = _;
+        this.options.radius = _;
       }
 
       this.trigger("change:radius");
@@ -169,10 +169,10 @@
      */
     levelGap: function(_) {
       if( ! arguments.length ) {
-        return this.features.levelGap;
+        return this.options.levelGap;
       }
 
-      this.features.levelGap = _;
+      this.options.levelGap = _;
       this.trigger("change:levelGap");
 
       if( this.root ) {

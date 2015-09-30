@@ -8,12 +8,12 @@
 
       chart.d3.layout = d3.layout.pack();
 
-      chart.diameter(chart.features.diameter || Math.min(chart.features.width, chart.features.height));
+      chart.diameter(chart.options.diameter || Math.min(chart.options.width, chart.options.height));
 
-      chart.d3.zoom.translate([(chart.features.width - chart.features.diameter) / 2, (chart.features.height - chart.features.diameter) / 2]);
+      chart.d3.zoom.translate([(chart.options.width - chart.options.diameter) / 2, (chart.options.height - chart.options.diameter) / 2]);
 
       chart.layers.base
-        .attr("transform", "translate(" + (chart.features.width - chart.features.diameter) / 2 + "," + (chart.features.height - chart.features.diameter) / 2 + ")");
+        .attr("transform", "translate(" + (chart.options.width - chart.options.diameter) / 2 + "," + (chart.options.height - chart.options.diameter) / 2 + ")");
 
 
       chart.layer("base", chart.layers.base, {
@@ -49,7 +49,7 @@
 
             this.select("text")
               .style("opacity", function(d) { return d.r > 20 ? 1 : 0; })
-              .text(function(d) { return d[chart.features.name]; });
+              .text(function(d) { return d[chart.options.name]; });
           },
         }
       });
@@ -57,7 +57,7 @@
 
       chart.on("change:diameter", function() {
         chart.layers.base
-          .attr("transform", "translate(" + (chart.features.width - chart.features.diameter) / 2 + "," + (chart.features.height - chart.features.diameter) / 2 + ")");
+          .attr("transform", "translate(" + (chart.options.width - chart.options.diameter) / 2 + "," + (chart.options.height - chart.options.diameter) / 2 + ")");
       });
     },
 
@@ -68,17 +68,17 @@
       chart.root = root;
 
       return chart.d3.layout
-        .size([chart.features.diameter, chart.features.diameter])
+        .size([chart.options.diameter, chart.options.diameter])
         .nodes(root);
     },
 
 
     diameter: function(_) {
       if( ! arguments.length ) {
-        return this.features.diameter;
+        return this.options.diameter;
       }
 
-      this.features.diameter = _ - 10;
+      this.options.diameter = _ - 10;
 
       this.trigger("change:diameter");
       if( this.root ) {
@@ -93,8 +93,8 @@
       var chart = this;
 
       var pack,
-          x = d3.scale.linear().range([0, chart.features.diameter]),
-          y = d3.scale.linear().range([0, chart.features.diameter]);
+          x = d3.scale.linear().range([0, chart.options.diameter]),
+          y = d3.scale.linear().range([0, chart.options.diameter]);
 
 
       chart.layers.base.on("merge", function() {
@@ -104,13 +104,13 @@
 
 
       function collapse(d) {
-        var k = chart.features.diameter / d.r / 2;
+        var k = chart.options.diameter / d.r / 2;
 
         x.domain([d.x - d.r, d.x + d.r]);
         y.domain([d.y - d.r, d.y + d.r]);
 
         var t = chart.layers.base.transition()
-          .duration(chart.features.duration);
+          .duration(chart.options.duration);
 
         t.selectAll(".pack")
           .attr("transform", function(d) { return "translate(" + x(d.x) + "," + y(d.y) + ")"; });

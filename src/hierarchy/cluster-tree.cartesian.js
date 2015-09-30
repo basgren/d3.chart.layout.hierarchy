@@ -7,7 +7,7 @@
 
       var chart = this;
 
-      chart.margin(chart.features.margin || {});
+      chart.margin(chart.options.margin || {});
 
       chart.d3.diagonal = d3.svg.diagonal().projection(function(d) { return [d.y, d.x]; });
 
@@ -21,7 +21,7 @@
       });
 
       chart.layers.nodes.on("merge:transition", function() {
-        this.duration(chart.features.duration)
+        this.duration(chart.options.duration)
           .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
       });
 
@@ -32,9 +32,9 @@
 
 
       chart.on("change:margin", function() {
-        chart.features.width  = chart.base.attr("width")  - chart.features.margin.left - chart.features.margin.right;
-        chart.features.height = chart.base.attr("height") - chart.features.margin.top  - chart.features.margin.bottom;
-        chart.base.attr("transform", "translate(" + chart.features.margin.left + "," + chart.features.margin.top + ")");
+        chart.options.width  = chart.base.attr("width")  - chart.options.margin.left - chart.options.margin.right;
+        chart.options.height = chart.base.attr("height") - chart.options.margin.top  - chart.options.margin.bottom;
+        chart.base.attr("transform", "translate(" + chart.options.margin.left + "," + chart.options.margin.top + ")");
       });
     },
 
@@ -48,11 +48,11 @@
 
       if( ! chart._internalUpdate ) {
         chart.root    = root;
-        chart.root.x0 = chart.features.height / 2;
+        chart.root.x0 = chart.options.height / 2;
         chart.root.y0 = 0;
 
         nodes = chart.d3.layout
-          .size([chart.features.height, chart.features.width])
+          .size([chart.options.height, chart.options.width])
           .nodes(chart.root)
           .reverse();
 
@@ -65,14 +65,14 @@
 
     margin: function(_) {
       if( ! arguments.length ) {
-        return this.features.margin;
+        return this.options.margin;
       }
 
       ["top", "right", "bottom", "left"].forEach(function(dimension) {
         if( dimension in _ ) {
           this[dimension] = _[dimension];
         }
-      }, this.features.margin = { top: 0, right: 0, bottom: 0, left: 0 });
+      }, this.options.margin = { top: 0, right: 0, bottom: 0, left: 0 });
 
       this.trigger("change:margin");
       if( this.root ) {

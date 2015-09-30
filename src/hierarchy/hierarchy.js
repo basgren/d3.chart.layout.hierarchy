@@ -7,7 +7,7 @@
       var chart = this;
 
 
-      chart.features = {};
+      chart.options  = {};
       chart.d3       = {};
       chart.layers   = {};
 
@@ -15,27 +15,27 @@
       chart.base.attr("width",  chart.base.node().parentNode.clientWidth);
       chart.base.attr("height", chart.base.node().parentNode.clientHeight);
 
-      chart.features.width  = chart.base.attr("width");
-      chart.features.height = chart.base.attr("height");
+      chart.options.width  = chart.base.attr("width");
+      chart.options.height = chart.base.attr("height");
 
-      chart.d3.colorScale = chart.features.colors ? d3.scale.ordinal().range(chart.features.colors) : d3.scale.category20c();
+      chart.d3.colorScale = chart.options.colors ? d3.scale.ordinal().range(chart.options.colors) : d3.scale.category20c();
 
       chart.d3.zoom = d3.behavior.zoom();
       chart.layers.base = chart.base.append("g");
 
-      chart.name(chart.features.name         || "name");
-      chart.value(chart.features.value       || "value");
-      chart.duration(chart.features.duration || 750);
+      chart.name(chart.options.name         || "name");
+      chart.value(chart.options.value       || "value");
+      chart.duration(chart.options.duration || 750);
 
 
 
       chart.on("change:value", function() {
-        chart.d3.layout.value(function(d) { return chart.features.value === "_COUNT" ? 1 : d[chart.features.value]; });
+        chart.d3.layout.value(function(d) { return chart.options.value === "_COUNT" ? 1 : d[chart.options.value]; });
       });
 
 
       chart.on("change:colors", function() {
-        chart.d3.colorScale = d3.scale.ordinal().range(chart.features.colors);
+        chart.d3.colorScale = d3.scale.ordinal().range(chart.options.colors);
       });
 
 
@@ -98,10 +98,10 @@
 
     name: function(_) {
       if( ! arguments.length ) {
-        return this.features.name;
+        return this.options.name;
       }
 
-      this.features.name = _;
+      this.options.name = _;
 
       this.trigger("change:name");
       if( this.root ) {
@@ -114,10 +114,10 @@
 
     value: function(_) {
       if( ! arguments.length ) {
-        return this.features.value;
+        return this.options.value;
       }
 
-      this.features.value = _;
+      this.options.value = _;
 
       this.trigger("change:value");
       if( this.root ) {
@@ -130,10 +130,10 @@
 
     colors: function(_) {
       if( ! arguments.length ) {
-        return this.features.colors;
+        return this.options.colors;
       }
 
-      this.features.colors = _;
+      this.options.colors = _;
 
       this.trigger("change:colors");
       if( this.root ) {
@@ -146,10 +146,10 @@
 
     duration: function(_) {
       if( ! arguments.length ) {
-        return this.features.duration;
+        return this.options.duration;
       }
 
-      this.features.duration = _;
+      this.options.duration = _;
 
       this.trigger("change:duration");
       if( this.root ) {
@@ -164,9 +164,9 @@
       var chart = this;
 
       if( _ === "_ASC" ) {
-        chart.d3.layout.sort(function(a, b) { return d3.ascending(a[chart.features.name], b[chart.features.name] ); });
+        chart.d3.layout.sort(function(a, b) { return d3.ascending(a[chart.options.name], b[chart.options.name] ); });
       } else if( _ === "_DESC" ) {
-        chart.d3.layout.sort(function(a, b) { return d3.descending(a[chart.features.name], b[chart.features.name] ); });
+        chart.d3.layout.sort(function(a, b) { return d3.descending(a[chart.options.name], b[chart.options.name] ); });
       } else {
         chart.d3.layout.sort(_);
       }

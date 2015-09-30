@@ -14,7 +14,7 @@
       var chart = this;
 
 
-      chart.features = {};
+      chart.options  = {};
       chart.d3       = {};
       chart.layers   = {};
 
@@ -22,27 +22,27 @@
       chart.base.attr("width",  chart.base.node().parentNode.clientWidth);
       chart.base.attr("height", chart.base.node().parentNode.clientHeight);
 
-      chart.features.width  = chart.base.attr("width");
-      chart.features.height = chart.base.attr("height");
+      chart.options.width  = chart.base.attr("width");
+      chart.options.height = chart.base.attr("height");
 
-      chart.d3.colorScale = chart.features.colors ? d3.scale.ordinal().range(chart.features.colors) : d3.scale.category20c();
+      chart.d3.colorScale = chart.options.colors ? d3.scale.ordinal().range(chart.options.colors) : d3.scale.category20c();
 
       chart.d3.zoom = d3.behavior.zoom();
       chart.layers.base = chart.base.append("g");
 
-      chart.name(chart.features.name         || "name");
-      chart.value(chart.features.value       || "value");
-      chart.duration(chart.features.duration || 750);
+      chart.name(chart.options.name         || "name");
+      chart.value(chart.options.value       || "value");
+      chart.duration(chart.options.duration || 750);
 
 
 
       chart.on("change:value", function() {
-        chart.d3.layout.value(function(d) { return chart.features.value === "_COUNT" ? 1 : d[chart.features.value]; });
+        chart.d3.layout.value(function(d) { return chart.options.value === "_COUNT" ? 1 : d[chart.options.value]; });
       });
 
 
       chart.on("change:colors", function() {
-        chart.d3.colorScale = d3.scale.ordinal().range(chart.features.colors);
+        chart.d3.colorScale = d3.scale.ordinal().range(chart.options.colors);
       });
 
 
@@ -105,10 +105,10 @@
 
     name: function(_) {
       if( ! arguments.length ) {
-        return this.features.name;
+        return this.options.name;
       }
 
-      this.features.name = _;
+      this.options.name = _;
 
       this.trigger("change:name");
       if( this.root ) {
@@ -121,10 +121,10 @@
 
     value: function(_) {
       if( ! arguments.length ) {
-        return this.features.value;
+        return this.options.value;
       }
 
-      this.features.value = _;
+      this.options.value = _;
 
       this.trigger("change:value");
       if( this.root ) {
@@ -137,10 +137,10 @@
 
     colors: function(_) {
       if( ! arguments.length ) {
-        return this.features.colors;
+        return this.options.colors;
       }
 
-      this.features.colors = _;
+      this.options.colors = _;
 
       this.trigger("change:colors");
       if( this.root ) {
@@ -153,10 +153,10 @@
 
     duration: function(_) {
       if( ! arguments.length ) {
-        return this.features.duration;
+        return this.options.duration;
       }
 
-      this.features.duration = _;
+      this.options.duration = _;
 
       this.trigger("change:duration");
       if( this.root ) {
@@ -171,9 +171,9 @@
       var chart = this;
 
       if( _ === "_ASC" ) {
-        chart.d3.layout.sort(function(a, b) { return d3.ascending(a[chart.features.name], b[chart.features.name] ); });
+        chart.d3.layout.sort(function(a, b) { return d3.ascending(a[chart.options.name], b[chart.options.name] ); });
       } else if( _ === "_DESC" ) {
-        chart.d3.layout.sort(function(a, b) { return d3.descending(a[chart.features.name], b[chart.features.name] ); });
+        chart.d3.layout.sort(function(a, b) { return d3.descending(a[chart.options.name], b[chart.options.name] ); });
       } else {
         chart.d3.layout.sort(_);
       }
@@ -212,8 +212,8 @@
 
       var counter = 0;
 
-      chart.radius(chart.features.radius     || 4.5);
-      chart.levelGap(chart.features.levelGap || "auto");
+      chart.radius(chart.options.radius     || 4.5);
+      chart.levelGap(chart.options.levelGap || "auto");
 
       chart.layers.links = chart.layers.base.append("g").classed("links", true);
       chart.layers.nodes = chart.layers.base.append("g").classed("nodes", true);
@@ -239,7 +239,7 @@
 
             this.append("text")
               .attr("dy", ".35em")
-              .text(function(d) { return d[chart.features.name]; })
+              .text(function(d) { return d[chart.options.name]; })
               .style("fill-opacity", 0);
 
             this.on("click", function(event) {
@@ -254,14 +254,14 @@
           "merge:transition": function() {
             this.select("circle")
               .attr()
-              .attr("r", chart.features.radius);
+              .attr("r", chart.options.radius);
 
             this.select("text")
               .style("fill-opacity", 1);
           },
 
           "exit:transition": function() {
-            this.duration(chart.features.duration)
+            this.duration(chart.options.duration)
               .remove();
 
             this.select("circle")
@@ -294,12 +294,12 @@
           },
 
           "merge:transition": function() {
-            this.duration(chart.features.duration)
+            this.duration(chart.options.duration)
               .attr("d", chart.d3.diagonal);
           },
 
           "exit:transition": function() {
-            this.duration(chart.features.duration)
+            this.duration(chart.options.duration)
               .attr("d", function(d) {
                 var o = { x: chart.source.x, y: chart.source.y };
                 return chart.d3.diagonal({ source: o, target: o });
@@ -316,8 +316,8 @@
       var chart = this;
 
       // Adjust gap between node levels.
-      if( chart.features.levelGap && chart.features.levelGap !== "auto" ) {
-        nodes.forEach(function (d) { d.y = d.depth * chart.features.levelGap; });
+      if( chart.options.levelGap && chart.options.levelGap !== "auto" ) {
+        nodes.forEach(function (d) { d.y = d.depth * chart.options.levelGap; });
       }
 
       chart.on("transform:stash", function() {
@@ -334,11 +334,11 @@
 
     radius: function(_) {
       if( ! arguments.length ) {
-        return this.features.radius;
+        return this.options.radius;
       }
 
       if( _ === "_COUNT" ) {
-        this.features.radius = function(d) {
+        this.options.radius = function(d) {
           if( d._children ) {
             return d._children.length;
           } else if( d.children ) {
@@ -348,7 +348,7 @@
         };
 
       } else {
-        this.features.radius = _;
+        this.options.radius = _;
       }
 
       this.trigger("change:radius");
@@ -372,10 +372,10 @@
      */
     levelGap: function(_) {
       if( ! arguments.length ) {
-        return this.features.levelGap;
+        return this.options.levelGap;
       }
 
-      this.features.levelGap = _;
+      this.options.levelGap = _;
       this.trigger("change:levelGap");
 
       if( this.root ) {
@@ -461,7 +461,7 @@
 
       var chart = this;
 
-      chart.margin(chart.features.margin || {});
+      chart.margin(chart.options.margin || {});
 
       chart.d3.diagonal = d3.svg.diagonal().projection(function(d) { return [d.y, d.x]; });
 
@@ -475,7 +475,7 @@
       });
 
       chart.layers.nodes.on("merge:transition", function() {
-        this.duration(chart.features.duration)
+        this.duration(chart.options.duration)
           .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
       });
 
@@ -486,9 +486,9 @@
 
 
       chart.on("change:margin", function() {
-        chart.features.width  = chart.base.attr("width")  - chart.features.margin.left - chart.features.margin.right;
-        chart.features.height = chart.base.attr("height") - chart.features.margin.top  - chart.features.margin.bottom;
-        chart.base.attr("transform", "translate(" + chart.features.margin.left + "," + chart.features.margin.top + ")");
+        chart.options.width  = chart.base.attr("width")  - chart.options.margin.left - chart.options.margin.right;
+        chart.options.height = chart.base.attr("height") - chart.options.margin.top  - chart.options.margin.bottom;
+        chart.base.attr("transform", "translate(" + chart.options.margin.left + "," + chart.options.margin.top + ")");
       });
     },
 
@@ -502,11 +502,11 @@
 
       if( ! chart._internalUpdate ) {
         chart.root    = root;
-        chart.root.x0 = chart.features.height / 2;
+        chart.root.x0 = chart.options.height / 2;
         chart.root.y0 = 0;
 
         nodes = chart.d3.layout
-          .size([chart.features.height, chart.features.width])
+          .size([chart.options.height, chart.options.width])
           .nodes(chart.root)
           .reverse();
 
@@ -519,14 +519,14 @@
 
     margin: function(_) {
       if( ! arguments.length ) {
-        return this.features.margin;
+        return this.options.margin;
       }
 
       ["top", "right", "bottom", "left"].forEach(function(dimension) {
         if( dimension in _ ) {
           this[dimension] = _[dimension];
         }
-      }, this.features.margin = { top: 0, right: 0, bottom: 0, left: 0 });
+      }, this.options.margin = { top: 0, right: 0, bottom: 0, left: 0 });
 
       this.trigger("change:margin");
       if( this.root ) {
@@ -548,13 +548,13 @@
 
       var chart = this;
 
-      chart.diameter(chart.features.diameter || Math.min(chart.features.width, chart.features.height));
+      chart.diameter(chart.options.diameter || Math.min(chart.options.width, chart.options.height));
 
       chart.d3.diagonal = d3.svg.diagonal.radial().projection(function(d) { return [d.y, d.x / 180 * Math.PI]; });
-      chart.d3.zoom.translate([chart.features.diameter / 2, chart.features.diameter / 2]);
+      chart.d3.zoom.translate([chart.options.diameter / 2, chart.options.diameter / 2]);
 
       chart.layers.base
-        .attr("transform", "translate(" + chart.features.diameter / 2 + "," + chart.features.diameter / 2 + ")");
+        .attr("transform", "translate(" + chart.options.diameter / 2 + "," + chart.options.diameter / 2 + ")");
 
 
       chart.layers.nodes.on("enter", function() {
@@ -567,7 +567,7 @@
       });
 
       chart.layers.nodes.on("merge:transition", function() {
-        this.duration(chart.features.duration)
+        this.duration(chart.options.duration)
           .attr("transform", function(d) { return "rotate(" + (d.x - 90) + ")translate(" + d.y + ")"; });
       });
 
@@ -590,7 +590,7 @@
         chart.root.y0 = 0;
 
         nodes = chart.d3.layout
-          .size([360, chart.features.diameter / 4])
+          .size([360, chart.options.diameter / 4])
           .separation(function(a, b) {
               if( a.depth === 0 ) {
                  return 1;
@@ -610,10 +610,10 @@
 
     diameter: function(_) {
       if( ! arguments.length ) {
-        return this.features.diameter;
+        return this.options.diameter;
       }
 
-      this.features.diameter = _;
+      this.options.diameter = _;
 
       this.trigger("change:diameter");
       if( this.root ) {
@@ -689,13 +689,13 @@
 
       chart.d3.layout = d3.layout.pack();
 
-      chart.bubble(chart.features.bubble     || {});
-      chart.diameter(chart.features.diameter || Math.min(chart.features.width, chart.features.height));
+      chart.bubble(chart.options.bubble     || {});
+      chart.diameter(chart.options.diameter || Math.min(chart.options.width, chart.options.height));
 
-      chart.d3.zoom.translate([(chart.features.width - chart.features.diameter) / 2, (chart.features.height - chart.features.diameter) / 2]);
+      chart.d3.zoom.translate([(chart.options.width - chart.options.diameter) / 2, (chart.options.height - chart.options.diameter) / 2]);
 
       chart.layers.base
-        .attr("transform", "translate(" + (chart.features.width - chart.features.diameter) / 2 + "," + (chart.features.height - chart.features.diameter) / 2 + ")");
+        .attr("transform", "translate(" + (chart.options.width - chart.options.diameter) / 2 + "," + (chart.options.height - chart.options.diameter) / 2 + ")");
 
 
       chart.layer("base", chart.layers.base, {
@@ -715,14 +715,14 @@
 
             this.append("circle")
               .attr("r", function(d) { return d.r; })
-              .style("fill", function(d) { return chart.d3.colorScale(chart.features.bubble.pack(d)); });
+              .style("fill", function(d) { return chart.d3.colorScale(chart.options.bubble.pack(d)); });
 
             this.append("text")
               .attr("dy", ".3em")
-              .text(function(d) { return d[chart.features.name].substring(0, d.r / 3); });
+              .text(function(d) { return d[chart.options.name].substring(0, d.r / 3); });
 
             this.append("title")
-              .text(chart.features.bubble.title);
+              .text(chart.options.bubble.title);
 
             this.on("click", function(event) {
               chart.trigger("pack:click", event);
@@ -733,7 +733,7 @@
 
       chart.on("change:diameter", function() {
         chart.layers.base
-          .attr("transform", "translate(" + (chart.features.width - chart.features.diameter) / 2 + "," + (chart.features.height - chart.features.diameter) / 2 + ")");
+          .attr("transform", "translate(" + (chart.options.width - chart.options.diameter) / 2 + "," + (chart.options.height - chart.options.diameter) / 2 + ")");
       });
     },
 
@@ -745,18 +745,18 @@
       chart.root = root;
 
       return chart.d3.layout
-        .size([chart.features.diameter, chart.features.diameter])
+        .size([chart.options.diameter, chart.options.diameter])
         .padding(1.5)
-        .nodes(chart.features.bubble.flatten ? chart.features.bubble.flatten(root) : root);
+        .nodes(chart.options.bubble.flatten ? chart.options.bubble.flatten(root) : root);
     },
 
 
     diameter: function(_) {
       if( ! arguments.length ) {
-        return this.features.diameter;
+        return this.options.diameter;
       }
 
-      this.features.diameter = _ - 10;
+      this.options.diameter = _ - 10;
 
       this.trigger("change:diameter");
       if( this.root ) {
@@ -769,7 +769,7 @@
 
     bubble: function(_) {
       if( ! arguments.length ) {
-        return this.features.bubble;
+        return this.options.bubble;
       }
 
       var chart = this;
@@ -778,10 +778,10 @@
         if( func in _ ) {
           this[func] = d3.functor(_[func]);
         }
-      }, this.features.bubble = {
+      }, this.options.bubble = {
          flatten : null,
-         title   : function(d) { return d[chart.features.value]; },
-         pack    : function(d) { return d[chart.features.name]; }
+         title   : function(d) { return d[chart.options.value]; },
+         pack    : function(d) { return d[chart.options.name]; }
         }
       );
 
@@ -807,12 +807,12 @@
 
       chart.d3.layout = d3.layout.pack();
 
-      chart.diameter(chart.features.diameter || Math.min(chart.features.width, chart.features.height));
+      chart.diameter(chart.options.diameter || Math.min(chart.options.width, chart.options.height));
 
-      chart.d3.zoom.translate([(chart.features.width - chart.features.diameter) / 2, (chart.features.height - chart.features.diameter) / 2]);
+      chart.d3.zoom.translate([(chart.options.width - chart.options.diameter) / 2, (chart.options.height - chart.options.diameter) / 2]);
 
       chart.layers.base
-        .attr("transform", "translate(" + (chart.features.width - chart.features.diameter) / 2 + "," + (chart.features.height - chart.features.diameter) / 2 + ")");
+        .attr("transform", "translate(" + (chart.options.width - chart.options.diameter) / 2 + "," + (chart.options.height - chart.options.diameter) / 2 + ")");
 
 
       chart.layer("base", chart.layers.base, {
@@ -848,7 +848,7 @@
 
             this.select("text")
               .style("opacity", function(d) { return d.r > 20 ? 1 : 0; })
-              .text(function(d) { return d[chart.features.name]; });
+              .text(function(d) { return d[chart.options.name]; });
           },
         }
       });
@@ -856,7 +856,7 @@
 
       chart.on("change:diameter", function() {
         chart.layers.base
-          .attr("transform", "translate(" + (chart.features.width - chart.features.diameter) / 2 + "," + (chart.features.height - chart.features.diameter) / 2 + ")");
+          .attr("transform", "translate(" + (chart.options.width - chart.options.diameter) / 2 + "," + (chart.options.height - chart.options.diameter) / 2 + ")");
       });
     },
 
@@ -867,17 +867,17 @@
       chart.root = root;
 
       return chart.d3.layout
-        .size([chart.features.diameter, chart.features.diameter])
+        .size([chart.options.diameter, chart.options.diameter])
         .nodes(root);
     },
 
 
     diameter: function(_) {
       if( ! arguments.length ) {
-        return this.features.diameter;
+        return this.options.diameter;
       }
 
-      this.features.diameter = _ - 10;
+      this.options.diameter = _ - 10;
 
       this.trigger("change:diameter");
       if( this.root ) {
@@ -892,8 +892,8 @@
       var chart = this;
 
       var pack,
-          x = d3.scale.linear().range([0, chart.features.diameter]),
-          y = d3.scale.linear().range([0, chart.features.diameter]);
+          x = d3.scale.linear().range([0, chart.options.diameter]),
+          y = d3.scale.linear().range([0, chart.options.diameter]);
 
 
       chart.layers.base.on("merge", function() {
@@ -903,13 +903,13 @@
 
 
       function collapse(d) {
-        var k = chart.features.diameter / d.r / 2;
+        var k = chart.options.diameter / d.r / 2;
 
         x.domain([d.x - d.r, d.x + d.r]);
         y.domain([d.y - d.r, d.y + d.r]);
 
         var t = chart.layers.base.transition()
-          .duration(chart.features.duration);
+          .duration(chart.options.duration);
 
         t.selectAll(".pack")
           .attr("transform", function(d) { return "translate(" + x(d.x) + "," + y(d.y) + ")"; });
@@ -940,20 +940,20 @@
 
       chart.d3.layout = d3.layout.partition();
 
-      chart.diameter(chart.features.diameter || Math.min(chart.features.width, chart.features.height));
+      chart.diameter(chart.options.diameter || Math.min(chart.options.width, chart.options.height));
 
       chart.d3.x   = d3.scale.linear().range([0, 2 * Math.PI]);
-      chart.d3.y   = d3.scale.sqrt().range([0, chart.features.diameter / 2]);
+      chart.d3.y   = d3.scale.sqrt().range([0, chart.options.diameter / 2]);
       chart.d3.arc = d3.svg.arc()
         .startAngle(function(d)  { return Math.max(0, Math.min(2 * Math.PI, chart.d3.x(d.x))); })
         .endAngle(function(d)    { return Math.max(0, Math.min(2 * Math.PI, chart.d3.x(d.x + d.dx))); })
         .innerRadius(function(d) { return Math.max(0, chart.d3.y(d.y)); })
         .outerRadius(function(d) { return Math.max(0, chart.d3.y(d.y + d.dy)); });
 
-      chart.d3.zoom.translate([chart.features.width / 2, chart.features.height / 2]);
+      chart.d3.zoom.translate([chart.options.width / 2, chart.options.height / 2]);
 
       chart.layers.base
-        .attr("transform", "translate(" + chart.features.width / 2 + "," + chart.features.height / 2 + ")");
+        .attr("transform", "translate(" + chart.options.width / 2 + "," + chart.options.height / 2 + ")");
 
 
       chart.layer("base", chart.layers.base, {
@@ -969,7 +969,7 @@
         events: {
           "enter": function() {
             this.attr("d", chart.d3.arc)
-              .style("fill", function(d) { return chart.d3.colorScale((d.children ? d : d.parent)[chart.features.name]); });
+              .style("fill", function(d) { return chart.d3.colorScale((d.children ? d : d.parent)[chart.options.name]); });
 
             this.on("click", function(event) {
               chart.trigger("path:click", event);
@@ -981,9 +981,9 @@
 
       chart.on("change:radius", function() {
         chart.layers.paths
-          .attr("transform", "translate(" + chart.features.width / 2 + "," + chart.features.height / 2 + ")");
+          .attr("transform", "translate(" + chart.options.width / 2 + "," + chart.options.height / 2 + ")");
 
-        chart.d3.y = d3.scale.sqrt().range([0, chart.features.diameter / 2]);
+        chart.d3.y = d3.scale.sqrt().range([0, chart.options.diameter / 2]);
       });
 
     },
@@ -1001,10 +1001,10 @@
 
     diameter: function(_) {
       if( ! arguments.length ) {
-        return this.features.diameter;
+        return this.options.diameter;
       }
 
-      this.features.diameter = _ - 10;
+      this.options.diameter = _ - 10;
 
       this.trigger("change:radius");
       if( this.root ) {
@@ -1022,7 +1022,7 @@
         var path = this;
         chart.on("path:click", function(d) {
             path.transition()
-              .duration(chart.features.duration)
+              .duration(chart.options.duration)
               .attrTween("d", arcTween(d));
           });
       });
@@ -1030,7 +1030,7 @@
       function arcTween(d) {
         var xd = d3.interpolate(chart.d3.x.domain(), [d.x, d.x + d.dx]),
             yd = d3.interpolate(chart.d3.y.domain(), [d.y, 1]),
-            yr = d3.interpolate(chart.d3.y.range(),  [d.y ? 20 : 0, chart.features.diameter / 2]);
+            yr = d3.interpolate(chart.d3.y.range(),  [d.y ? 20 : 0, chart.options.diameter / 2]);
 
         return function(d, i) {
           return i ? function(t) { return chart.d3.arc(d); }
@@ -1055,8 +1055,8 @@
 
       chart.d3.layout = d3.layout.partition();
 
-      var x = d3.scale.linear().range([0, chart.features.width]),
-          y = d3.scale.linear().range([0, chart.features.height]);
+      var x = d3.scale.linear().range([0, chart.options.width]),
+          y = d3.scale.linear().range([0, chart.options.height]);
 
       chart.d3.transform = function(d, ky) { return "translate(8," + d.dx * ky / 2 + ")"; };
 
@@ -1078,8 +1078,8 @@
 
             this.attr("transform", function(d) { return "translate(" + x(d.y) + "," + y(d.x) + ")"; });
 
-            var kx = chart.features.width  / chart.root.dx,
-                ky = chart.features.height / 1;
+            var kx = chart.options.width  / chart.root.dx,
+                ky = chart.options.height / 1;
 
             this.append("rect")
               .attr("width", chart.root.dy * kx)
@@ -1089,7 +1089,7 @@
               .attr("transform", function(d) { return chart.d3.transform(d, ky); })
               .attr("dy", ".35em")
               .style("opacity", function(d) { return d.dx * ky > 12 ? 1 : 0; })
-              .text(function(d) { return d[chart.features.name]; });
+              .text(function(d) { return d[chart.options.name]; });
 
             this.on("click", function(event) {
               chart.trigger("rect:click", event);
@@ -1115,7 +1115,7 @@
 
       var node,
           x = d3.scale.linear(),
-          y = d3.scale.linear().range([0, chart.features.height]);
+          y = d3.scale.linear().range([0, chart.options.height]);
 
       chart.layers.base.on("merge", function() {
         node = chart.root;
@@ -1123,14 +1123,14 @@
       });
 
       function collapse(d) {
-        var kx = (d.y ? chart.features.width - 40 : chart.features.width) / (1 - d.y),
-            ky = chart.features.height / d.dx;
+        var kx = (d.y ? chart.options.width - 40 : chart.options.width) / (1 - d.y),
+            ky = chart.options.height / d.dx;
 
-        x.domain([d.y, 1]).range([d.y ? 40 : 0, chart.features.width]);
+        x.domain([d.y, 1]).range([d.y ? 40 : 0, chart.options.width]);
         y.domain([d.x, d.x + d.dx]);
 
         var t = chart.layers.base.transition()
-          .duration(chart.features.duration);
+          .duration(chart.options.duration);
 
         t.selectAll(".partition")
           .attr("transform", function(d) { return "translate(" + x(d.y) + "," + y(d.x) + ")"; });
@@ -1181,13 +1181,13 @@
             this.append("rect")
               .attr("width", function(d) { return d.dx; })
               .attr("height", function(d) { return d.dy; })
-              .attr("fill", function(d) { return d.parent ? chart.d3.colorScale(d.parent[chart.features.name]) : null; });
+              .attr("fill", function(d) { return d.parent ? chart.d3.colorScale(d.parent[chart.options.name]) : null; });
 
             this.append("text")
               .attr("x", function(d) { return d.dx / 2; })
               .attr("y", function(d) { return d.dy / 2; })
               .attr("dy", ".35em")
-              .text(function(d) { return d.children ? null : d[chart.features.name]; }) // order is matter! getComputedTextLength
+              .text(function(d) { return d.children ? null : d[chart.options.name]; }) // order is matter! getComputedTextLength
               .style("opacity", function(d) { d.w = this.getComputedTextLength(); return d.dx > d.w ? 1 : 0; });
 
             this.on("click", function(event) {
@@ -1206,7 +1206,7 @@
 
       return chart.d3.layout
         .round(false)
-        .size([chart.features.width, chart.features.height])
+        .size([chart.options.width, chart.options.height])
         .sticky(true)
         .nodes(root);
     },
@@ -1216,8 +1216,8 @@
       var chart = this;
 
       var node,
-          x = d3.scale.linear().range([0, chart.features.width]),
-          y = d3.scale.linear().range([0, chart.features.height]);
+          x = d3.scale.linear().range([0, chart.options.width]),
+          y = d3.scale.linear().range([0, chart.options.height]);
 
       chart.layers.base.on("merge", function() {
         node = chart.root;
@@ -1225,14 +1225,14 @@
       });
 
       function collapse(d) {
-        var kx = chart.features.width  / d.dx,
-            ky = chart.features.height / d.dy;
+        var kx = chart.options.width  / d.dx,
+            ky = chart.options.height / d.dy;
 
         x.domain([d.x, d.x + d.dx]);
         y.domain([d.y, d.y + d.dy]);
 
         var t = chart.layers.base.transition()
-          .duration(chart.features.duration);
+          .duration(chart.options.duration);
 
         t.selectAll(".cell")
           .attr("transform", function(d) { return "translate(" + x(d.x) + "," + y(d.y) + ")"; });

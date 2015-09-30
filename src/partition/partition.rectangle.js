@@ -9,8 +9,8 @@
 
       chart.d3.layout = d3.layout.partition();
 
-      var x = d3.scale.linear().range([0, chart.features.width]),
-          y = d3.scale.linear().range([0, chart.features.height]);
+      var x = d3.scale.linear().range([0, chart.options.width]),
+          y = d3.scale.linear().range([0, chart.options.height]);
 
       chart.d3.transform = function(d, ky) { return "translate(8," + d.dx * ky / 2 + ")"; };
 
@@ -32,8 +32,8 @@
 
             this.attr("transform", function(d) { return "translate(" + x(d.y) + "," + y(d.x) + ")"; });
 
-            var kx = chart.features.width  / chart.root.dx,
-                ky = chart.features.height / 1;
+            var kx = chart.options.width  / chart.root.dx,
+                ky = chart.options.height / 1;
 
             this.append("rect")
               .attr("width", chart.root.dy * kx)
@@ -43,7 +43,7 @@
               .attr("transform", function(d) { return chart.d3.transform(d, ky); })
               .attr("dy", ".35em")
               .style("opacity", function(d) { return d.dx * ky > 12 ? 1 : 0; })
-              .text(function(d) { return d[chart.features.name]; });
+              .text(function(d) { return d[chart.options.name]; });
 
             this.on("click", function(event) {
               chart.trigger("rect:click", event);
@@ -69,7 +69,7 @@
 
       var node,
           x = d3.scale.linear(),
-          y = d3.scale.linear().range([0, chart.features.height]);
+          y = d3.scale.linear().range([0, chart.options.height]);
 
       chart.layers.base.on("merge", function() {
         node = chart.root;
@@ -77,14 +77,14 @@
       });
 
       function collapse(d) {
-        var kx = (d.y ? chart.features.width - 40 : chart.features.width) / (1 - d.y),
-            ky = chart.features.height / d.dx;
+        var kx = (d.y ? chart.options.width - 40 : chart.options.width) / (1 - d.y),
+            ky = chart.options.height / d.dx;
 
-        x.domain([d.y, 1]).range([d.y ? 40 : 0, chart.features.width]);
+        x.domain([d.y, 1]).range([d.y ? 40 : 0, chart.options.width]);
         y.domain([d.x, d.x + d.dx]);
 
         var t = chart.layers.base.transition()
-          .duration(chart.features.duration);
+          .duration(chart.options.duration);
 
         t.selectAll(".partition")
           .attr("transform", function(d) { return "translate(" + x(d.y) + "," + y(d.x) + ")"; });
